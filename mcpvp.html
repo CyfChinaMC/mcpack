@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyfChinaMC's PvP Resource pack - 官方下载</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #020c1b, #0a192f, #112240);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; text-align: center;
+  }
+  .card {
+    background: rgba(17, 34, 64, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(100, 149, 237, 0.25);
+    border-radius: 20px;
+    padding: 60px 50px;
+    max-width: 620px;
+    box-shadow: 0 20px 60px rgba(2, 12, 27, 0.8);
+  }
+  h1 { font-size: 26px; margin-bottom: 12px; letter-spacing: 1px; }
+  h1 span { color: #64ffda; }
+  p.desc { color: #8892b0; line-height: 1.9; margin-bottom: 30px; font-size: 15px; }
+  .btn {
+    display: inline-block;
+    background: linear-gradient(90deg, #1e5aa8, #3b82f6);
+    color: #fff; font-size: 18px; font-weight: bold;
+    padding: 16px 50px; border: none; border-radius: 50px;
+    cursor: pointer; letter-spacing: 2px;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.35);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(59, 130, 246, 0.55); }
+  .btn:disabled { opacity: .6; cursor: wait; }
+  .status { margin-top: 20px; font-size: 14px; color: #8892b0; min-height: 20px; }
+  .tags { margin-top: 28px; }
+  .tag {
+    display: inline-block; background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 13px; margin: 4px; color: #9db8e8;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1><span>CyfChinaMC's</span> PvP Resource pack</h1>
+    <p class="desc">
+      这是一款竞技而生的终极材质包，它把图腾缩小了，盾牌变成侧盾牌，
+      火焰也降低了，物品缩小，3D水晶，适用于盾斧pvp、水晶pvp。
+    </p>
+    <button class="btn" id="dl">立即下载</button>
+    <div class="status" id="status"></div>
+    <div class="tags">
+      <span class="tag">Minecraft 1.21.x - 26.x</span>
+      <span class="tag">mcpvp.zip</span>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script>
+document.getElementById('dl').onclick = async function () {
+  const status = document.getElementById('status');
+  this.disabled = true;
+  status.textContent = '正在打包材质包…';
+
+  const zip = new JSZip();
+
+  zip.file('pack.mcmeta', JSON.stringify({
+    pack: {
+      pack_format: 48,
+      description: "CyfChinaMC's PvP Resource pack"
+    }
+  }, null, 2));
+
+  zip.file('README.txt',
+`CyfChinaMC's PvP Resource pack
+================================
+作者: CyfChinaMC
+适用版本: Minecraft 1.21.x - 26.x
+将本压缩包放入 .minecraft/resourcepacks 目录即可使用
+`);
+
+  zip.folder('assets').folder('minecraft').folder('textures');
+
+  const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'mcpvp.zip';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  status.textContent = '✅ 下载完成！放入 .minecraft/resourcepacks 即可使用';
+  this.disabled = false;
+};
+</script>
+</body>
+</html>
